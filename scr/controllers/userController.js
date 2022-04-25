@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import userValidations from '../services/userValidations.js'
+import userValidations from '../services/userValidations.js';
 
 class UserController {
 
@@ -11,13 +11,13 @@ class UserController {
 
         let users = userValidations(res, email, password, confirmPassword);
 
-        if(!users.valid)
+        if (!users.valid)
             return;
 
         let userExists = await User.findOne({ email: email });
 
-        if(userExists)
-            return res.status(422).json({ msg: "This e-mail already registered. Please use another one."});
+        if (userExists)
+            return res.status(422).json({ msg: "This e-mail already registered. Please use another one." });
 
         let salt = await bcrypt.genSalt(12);
         let passwordHash = await bcrypt.hash(password, salt);
@@ -30,12 +30,12 @@ class UserController {
         try {
             await user.save()
 
-            res.status(201).json({ msg: 'User registered successfully'})
+            res.status(201).json({ msg: 'User registered successfully' })
 
         } catch (error) {
             console.log(error)
 
-            res.status(500).json({ msg: 'There was an error on the server. Please try again later'})            
+            res.status(500).json({ msg: 'There was an error on the server. Please try again later' })
         }
     }
 
@@ -56,7 +56,7 @@ class UserController {
 
         let checkPassword = await bcrypt.compare(password, user.password);
 
-        if(!checkPassword)
+        if (!checkPassword)
             return res.status(422).json({ msg: 'Invalid password' });
 
         try {
@@ -74,13 +74,17 @@ class UserController {
         } catch (error) {
             console.log(error)
 
-            res.status(500).json({ msg: 'There was an error on the server.Please try again later'})
+            res.status(500).json({ msg: 'There was an error on the server.Please try again later' })
         }
     }
 
     static listUser = (req, res) => {
         User.find((_, user) => {
-            res.status(200).json(user)
+            if (user.ativo !== true) {
+                res.status(404).json({ msg: 'User not found' })
+            } else {
+                res.status(200).json(user)
+            }
         })
     }
 
@@ -88,10 +92,10 @@ class UserController {
         let { id } = req.params;
 
         User.findById(id, (err, user) => {
-            if(!err) {
+            if (!err) {
                 user.ativo = false;
                 User.findByIdAndUpdate(id, user, err => {
-                    if(!err){
+                    if (!err) {
                         res.status(200).json({ msg: 'User deleted successfully' })
                     } else {
                         res.status(500).json({ msg: 'There was an error on the server. Please try again later.' })
