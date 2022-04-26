@@ -49,23 +49,26 @@ export async function ifExistsCreate(res, razaoSocial, nomeFantasia, CNPJ, email
     return { valid: true }
 }
 
-export async function ifExistsUpdate(res, id, razaoSocial, nomeFantasia, CNPJ, email, telefone) {
+export async function ifExistsUpdate(res, razaoSocial, nomeFantasia, CNPJ, email, telefone, id) {
 
-    let clients = await Client.find({ $or: [{ id: id }, { razaoSocial: razaoSocial }, { nomeFantasia: nomeFantasia }, { CNPJ: CNPJ }, { email: email }, { telefone: telefone }] });
+    let clients = await Client.find({ $or: [{ razaoSocial: razaoSocial }, { nomeFantasia: nomeFantasia }, { CNPJ: CNPJ }, { email: email }, { telefone: telefone }] });
 
-    if (clients.length > 0 && clients.id !== id) {
+    let actually = await Client.findOne({ _id: id });
 
-        if (clients.findIndex(i => i.razaoSocial === razaoSocial) !== -1)
+    if (clients.length > 0) {
+
+        if (clients.findIndex(i => i.razaoSocial === razaoSocial && actually.razaoSocial !== razaoSocial) !== -1)
             return res.status(400).json({ msg: 'This razao social already registered!', valid: false });
 
-        if (clients.findIndex(i => i.nomeFantasia === nomeFantasia) !== -1)
+        if (clients.findIndex(i => i.nomeFantasia === nomeFantasia && actually.nomeFantasia !== nomeFantasia) !== -1)
             return res.status(400).json({ msg: 'This nome fantasia already registered!', valid: false });
 
-        if (clients.findIndex(i => i.CNPJ === CNPJ) !== -1)
+        if (clients.findIndex(i => i.CNPJ === CNPJ && actually.CNPJ !== CNPJ) !== -1)
             return res.status(400).json({ msg: 'This CNPJ already registered!', valid: false });
 
-        if (clients.findIndex(i => i.email === email) !== -1)
+        if (clients.findIndex(i => i.email === email && actually.email !== email) !== -1)
             return res.status(400).json({ msg: 'This e-mail already registered!', valid: false });
+
     }
 
     return { valid: true }
