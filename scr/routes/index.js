@@ -2,6 +2,7 @@ import express from 'express';
 import user from './userRoute.js';
 import client from './clientRoute.js';
 import produto from './produtoRoute.js';
+import invoice from './invoiceRoute.js';
 
 const routes = (app) => {
     app.use(
@@ -9,7 +10,8 @@ const routes = (app) => {
         express.urlencoded({extended: true}),
         user,
         client,
-        produto
+        produto,
+        invoice
     )
 }
 
