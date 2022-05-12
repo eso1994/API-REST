@@ -45,6 +45,6 @@ e-mail (max: 50)
 senha (possuir no minimo 8 caracteres contendo ao menos uma letra maiúscula, um número e um caracter especial).
 ativo (default true)
 
-Existem rotas para realizar cada operação (criação, alteração e exclusão de entidades - no caso de exclusão utilizo soft deletes) As rotas, com exceção de login, são protegidas com autenticação.
+Existem rotas para realizar cada operação (criação, alteração e exclusão de entidades - No caso de exclusão de usuários utilizo soft deletes) As rotas, com exceção de login, são protegidas com autenticação.
 
 As entidades possuem validação nos campos (e-mail válido, cnpj válido etc... )
