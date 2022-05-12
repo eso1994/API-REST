@@ -7,7 +7,7 @@ class ProdutoController {
 
         const { id } = req.body;
 
-        const values = await apiProduto(id);
+        const values = await apiProduto.apiFinder(id);
 
         const produto = new Produto(values);
 
