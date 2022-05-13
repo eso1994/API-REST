@@ -9,5 +9,6 @@ router
     .get('/invoice', checkToken, InvoiceController.searchInvoice)
     .get('/invoice/:id', checkToken, InvoiceController.searchInvoiceById)
     .put('/invoice/:id', checkToken, InvoiceController.updateInvoice)
+    .delete('/invoice/:id', checkToken, InvoiceController.deleteInvoice)
 
 export default router;

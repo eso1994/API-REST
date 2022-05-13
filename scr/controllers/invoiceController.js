@@ -68,11 +68,38 @@ class invoiceController {
         let { id } = req.params;
         let values = req.body;
 
+        if (values.previsaoDeChegada) {
+            let previsaoDeChegada = moment(values.previsaoDeChegada, 'DD/MM/YYYY HH:mm:ss').format('YYYY-MM-DD HH:MM:SS');
+            let dataDeEmissao = moment().format('YYYY-MM-DD HH:mm:ss');
+            let previsaoDeChegadaValidation = moment(previsaoDeChegada).isSameOrAfter(dataDeEmissao);
+
+            let validations = {
+                field: 'previsao de chegada',
+                valid: previsaoDeChegadaValidation,
+                err: 'Estimed arrival must be after the current date'
+            };
+
+            if (validations.valid == false)
+                return res.status(400).json(validations);
+        }
+
         Invoice.findByIdAndUpdate(id, { $set: values }, err => {
             if (err) {
                 res.status(500).json(err.message)
             } else {
                 res.status(200).json({ msg: 'Invoice successfully update' })
+            }
+        })
+    }
+
+    static deleteInvoice = (req, res) => {
+        const { id } = req.params;
+
+        Invoice.findByIdAndDelete(id, err => {
+            if (err) {
+                res.status(500).json({ msg: 'There was an error on the server please try again later' })
+            } else {
+                res.status(200).json({ msg: 'Invoice deleted successfully' })
             }
         })
     }
