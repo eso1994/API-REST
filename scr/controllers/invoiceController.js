@@ -80,7 +80,7 @@ class invoiceController {
             };
 
             if (validations.valid == false)
-                return res.status(400).json(validations);
+                return res.status(400).json(validations.err);
         }
 
         Invoice.findByIdAndUpdate(id, { $set: values }, err => {
